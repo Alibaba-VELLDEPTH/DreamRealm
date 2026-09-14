@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Local credentials and runtime state
+.env
+*.local.env
+*.log
+resolved_config*.json
+resource_admission*.json
+submission*.json
+submit_attempt*.json
+xdl_config_*
+
+# Data, model weights, checkpoints, and runtime bundles
+*.jsonl
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+checkpoint-*/
+runtime_overlay.tar.gz
+
+# Platform/editor files
+.DS_Store
+.idea/
+.vscode/
