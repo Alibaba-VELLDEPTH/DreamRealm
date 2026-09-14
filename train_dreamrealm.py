@@ -1,4 +1,4 @@
-"""Single-GPU physical-machine trainer for DreamRealm whole-family objectives."""
+"""Single-GPU local trainer for DreamRealm whole-family objectives."""
 import argparse
 import hashlib
 import json
@@ -8,11 +8,9 @@ from pathlib import Path
 import random
 import time
 import torch
-import transformers
-from transformers import AutoProcessor, Qwen3_5ForConditionalGeneration
-from joint_dpo.trainability import configure_non_lora_trainability
 from dreamrealm.encoding import FamilyEncoder, score_cell
 from dreamrealm.engine import backward_family, CPUAdamW
+from dreamrealm.model_setup import freeze_vision_backbone
 from dreamrealm.prepare import read_jsonl, validate_family
 from dreamrealm.checkpoint_io import save_parts, load_parts
 
@@ -25,7 +23,7 @@ def probe(model):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--model',required=True);p.add_argument('--data',required=True);p.add_argument('--output',required=True)
-    p.add_argument('--media-root',default='/jindofs_temp');p.add_argument('--max-length',type=int,default=6144)
+    p.add_argument('--media-root',help='Base directory for relative image paths');p.add_argument('--max-length',type=int,default=6144)
     p.add_argument('--max-pixels',type=int,default=262144)
     p.add_argument('--tau',type=float,default=1.0);p.add_argument('--row-weight',type=float,default=.5);p.add_argument('--col-weight',type=float,default=.5)
     p.add_argument('--lr',type=float,default=5e-6);p.add_argument('--weight-decay',type=float,default=0.)
@@ -40,7 +38,12 @@ def main():
     p.add_argument('--save-model',action=argparse.BooleanOptionalAction,default=True)
     p.add_argument('--save-optimizer',action='store_true');p.add_argument('--resume',help='Checkpoint directory created with --save-optimizer')
     a=p.parse_args()
-    if int(os.environ.get('WORLD_SIZE','1')) != 1:raise ValueError('This physical-machine entry supports one GPU; do not launch via torchrun')
+    try:
+        import transformers
+        from transformers import AutoProcessor, Qwen3_5ForConditionalGeneration
+    except ImportError as exc:
+        raise RuntimeError('Install the pinned local dependencies: pip install -r requirements.txt') from exc
+    if int(os.environ.get('WORLD_SIZE','1')) != 1:raise ValueError('This local entry supports one GPU; do not launch via torchrun')
     if a.families_per_step<1 or a.epochs<1 or a.max_steps<0:raise ValueError('Invalid training limits')
     if not 0<=a.warmup_ratio<=1 or a.max_grad_norm<=0:raise ValueError('Invalid scheduler/gradient clipping')
     if a.tau<=0 or min(a.row_weight,a.col_weight)<0 or not all(math.isfinite(v) for v in (a.tau,a.row_weight,a.col_weight,a.lr)):raise ValueError('Invalid loss/lr')
@@ -74,7 +77,7 @@ def main():
         if isinstance(module,torch.nn.Dropout):module.p=0.
         for attr in ('attention_dropout','hidden_dropout'):
             if hasattr(module,attr) and isinstance(getattr(module,attr),(float,int)):setattr(module,attr,0.)
-    configure_non_lora_trainability(model,'full',True,False)
+    freeze_vision_backbone(model)
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant':a.checkpoint_reentrant})
     if hasattr(model,'enable_input_require_grads'):model.enable_input_require_grads()
     model.to(device);model.train()

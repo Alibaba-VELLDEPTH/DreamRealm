@@ -5,6 +5,7 @@ import unittest
 import torch
 from dreamrealm.objective import family_loss
 from dreamrealm.engine import backward_family, CPUAdamW
+from dreamrealm.model_setup import freeze_vision_backbone
 from dreamrealm.prepare import validate_family, convert
 
 class DreamRealmTest(unittest.TestCase):
@@ -68,5 +69,26 @@ class DreamRealmTest(unittest.TestCase):
         def score(_):calls[0]+=1;return p*calls[0]
         e=dict(family_id='x',shape=(1,1),with_edit=False,cells=[0])
         with self.assertRaisesRegex(RuntimeError,'drift'):backward_family(e,score)
+
+    def test_only_vision_backbone_is_frozen(self):
+        class TinyModel:
+            def __init__(self):
+                self.parameters = {
+                    'model.visual.patch_embed.weight': torch.nn.Parameter(torch.ones(1)),
+                    'model.visual.blocks.0.weight': torch.nn.Parameter(torch.ones(1)),
+                    'model.visual.merger.weight': torch.nn.Parameter(torch.ones(1)),
+                    'model.language_model.layers.0.weight': torch.nn.Parameter(torch.ones(1)),
+                }
+
+            def named_parameters(self):
+                return self.parameters.items()
+
+        model = TinyModel()
+        trainable = freeze_vision_backbone(model)
+        self.assertEqual(
+            trainable,
+            ['model.visual.merger.weight', 'model.language_model.layers.0.weight'],
+        )
+        self.assertFalse(model.parameters['model.visual.blocks.0.weight'].requires_grad)
 
 if __name__=='__main__':unittest.main()

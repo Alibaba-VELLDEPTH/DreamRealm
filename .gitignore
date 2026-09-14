@@ -10,13 +10,8 @@ venv/
 .env
 *.local.env
 *.log
-resolved_config*.json
-resource_admission*.json
-submission*.json
-submit_attempt*.json
-xdl_config_*
 
-# Data, model weights, checkpoints, and runtime bundles
+# Data, model weights, and checkpoints
 *.jsonl
 *.safetensors
 *.bin
@@ -24,9 +19,8 @@ xdl_config_*
 *.pth
 *.ckpt
 checkpoint-*/
-runtime_overlay.tar.gz
 
-# Platform/editor files
+# Editor files
 .DS_Store
 .idea/
 .vscode/

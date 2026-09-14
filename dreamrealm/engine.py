@@ -31,7 +31,7 @@ def backward_family(encoded, score_fn, scale=1.0, tau=1.0, row_weight=0.5, col_w
 class CPUAdamW:
     """FP32 master weights and Adam states on CPU; model/gradients stay on GPU.
 
-    Intended for the physical-machine single-GPU path, not a distributed wrapper.
+    Intended for the local single-GPU path.
     A complete family/batch backward finishes before step() copies any new weights.
     """
     def __init__(self, model, lr, weight_decay=0.0):

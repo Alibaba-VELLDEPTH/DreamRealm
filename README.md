@@ -1,53 +1,79 @@
-# DreamRealm Qwen3.5-VL Training
+# DreamRealm Qwen3.5-VL 本地训练
 
-Private research repository for the RealmForge family-matrix training used by the
-Qwen3.5-VL 9B experiment.
+这是一个精简的单机训练仓库，仅保留 Qwen3.5-VL 的 DreamRealm
+whole-family 训练链路。核心目标由完整回答 SFT、行方向匹配损失和列方向匹配损失组成，
+不使用 rollout 或参考模型。
 
-## Reproduced run
+## 仓库结构
 
-- Model family: Qwen3.5-VL 9B
-- Objective: answer-only family SFT with row/column cycle preference terms
-- Training families: 36,800
-- Distributed setup: 1 worker, 8 GPUs, DeepSpeed ZeRO-3
-- Optimizer steps: 1,383 (461 per epoch, 3 epochs)
-- Checkpoints: 461, 922, 1,383
-- Verified result: `ZERO3_FAMILY_FORMAL8_PASS`
-- Final training loss: 0.6693
-
-The full dataset and model checkpoints are intentionally not stored in Git.
-Their internal OSS locations and hashes are documented in `DATA_CHANGE.md` and
-the launch script.
-
-## Main entry points
-
-- `train_dreamrealm_zero3.py`: Qwen3.5 family-matrix ZeRO-3 trainer.
-- `dreamrealm/`: matrix encoding, objectives, batching, distributed helpers, and
-  checkpoint persistence.
-- `run_nebula_zero3_family_formal8_r06.sh`: exact 8-GPU smoke-gate plus formal
-  training workflow used for the successful run.
-- `submission/submit_realmforge_8g.py`: fixed-pool Nebula admission and submission
-  helper. Credentials are read from environment variables or an explicit local
-  OSS config file and are never committed.
-- `tests/`: unit and dry-run coverage.
-
-## Safety and reproducibility
-
-The launch path verifies the runtime archive and dataset SHA-256 before training,
-runs an 8-rank smoke gate, starts formal training from the original weights, and
-validates the final checkpoint at step 1,383. Resource admission is fixed to the
-guaranteed `secureagi_common_l20z_cn1040` pool with 8 L20Z GPUs.
-
-Before any new formal Nebula submission, re-check the pool, quota group, device
-type, GPU count, code/data hashes, expected duration, validation plan, and output
-prefix. Do not stop or migrate an existing run without explicit authorization.
-
-## Local checks
-
-```bash
-python -m compileall dreamrealm joint_dpo train_dreamrealm_zero3.py
-pytest -q
-bash -n run_nebula_zero3_family_formal8_r06.sh
+```text
+.
+├── dreamrealm/              # 数据校验、编码、目标函数、反传和检查点
+├── docs/data-format.md      # family JSONL 数据格式
+├── scripts/local_smoke.py   # 无需模型和 GPU 的 CPU 冒烟测试
+├── tests/                   # 核心单元测试
+├── train_dreamrealm.py      # 唯一训练入口：单机单卡
+└── requirements.txt
 ```
 
-See `README_DREAMREALM.md`, `docs/DreamRealm_训练方法说明.md`, and
-`docs/data-format.md` for the method and data schema.
+## 安装
+
+建议使用 Python 3.10 或 3.11。真实训练需要 Linux、CUDA GPU，以及本机可读取的
+Qwen3.5-VL 模型目录。
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+如果本机需要特定 CUDA 版本的 PyTorch，请先按 PyTorch 官方说明安装对应 wheel，
+再安装其余依赖。
+
+## 先跑本地冒烟测试
+
+这个命令只需要 CPU，不下载模型，也不读取图片：
+
+```bash
+python scripts/local_smoke.py
+python -m unittest discover -s tests -v
+```
+
+成功时第一条命令会输出 `"status": "PASS"`。
+
+## 单卡训练
+
+模型、数据、图片和输出都使用普通本地路径。JSONL 中的图片路径可以是绝对路径；
+若使用相对路径，通过 `--media-root` 指定图片根目录。
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python train_dreamrealm.py \
+  --model /models/Qwen3.5-9B \
+  --data /datasets/dreamrealm/families.jsonl \
+  --media-root /datasets/dreamrealm \
+  --output /checkpoints/dreamrealm-run-001 \
+  --epochs 3 \
+  --families-per-step 1 \
+  --lr 5e-6 \
+  --warmup-ratio 0.03 \
+  --lr-scheduler cosine \
+  --save-optimizer
+```
+
+训练默认冻结视觉 patch embedding 和视觉 blocks，训练语言模型与多模态投影层；优化器
+主权重和状态保存在 CPU，以降低单卡显存占用。输出目录必须不存在，避免覆盖已有结果。
+
+在正式训练前，可先验证完整数据和图像编码：
+
+```bash
+python train_dreamrealm.py \
+  --model /models/Qwen3.5-9B \
+  --data /datasets/dreamrealm/families.jsonl \
+  --media-root /datasets/dreamrealm \
+  --output /tmp/dreamrealm-preflight \
+  --preflight-only
+```
+
+数据字段与 edited/no-edit 两种 family 结构见
+[docs/data-format.md](docs/data-format.md)。

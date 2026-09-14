@@ -12,10 +12,10 @@ class FamilyEncoder:
         self.media_root = media_root
 
     def image_path(self, path):
-        prefix = '/data/oss_bucket_0/deltalake/other_sample/'
-        if self.media_root and path.startswith(prefix):
-            return str(Path(self.media_root) / path[len(prefix):])
-        return path
+        image = Path(path).expanduser()
+        if image.is_absolute() or not self.media_root:
+            return str(image)
+        return str(Path(self.media_root).expanduser() / image)
 
     def encode(self, family):
         validate_family(family)

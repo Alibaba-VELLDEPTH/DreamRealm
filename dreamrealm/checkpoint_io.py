@@ -1,4 +1,4 @@
-"""Bound torch checkpoint object size on OSS mounts without changing tensors."""
+"""Split large torch checkpoint objects into verified, bounded-size parts."""
 import bisect
 import hashlib
 import io
