@@ -11,7 +11,7 @@ hf download Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm \
   --local-dir /models/Qwen35-9b-DreamRealm
 ```
 
-The release configuration records Transformers 5.3.0. The following example follows the Qwen3.5 processor/generation interface and disables thinking to match the training prompt mode. It requires CUDA and sufficient memory; it is a usage example, not a measured GPU compatibility guarantee.
+The release configuration records Transformers 5.3.0, but new installations use the repository's 5.10.4 pin because the historical version has known security advisories. The following example follows the Qwen3.5 processor/generation interface and disables thinking to match the training prompt mode. It requires CUDA and sufficient memory; it is a usage example, not a measured GPU compatibility guarantee. See [security notes](../SECURITY.md).
 
 ```python
 from pathlib import Path

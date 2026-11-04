@@ -8,6 +8,7 @@
 <a href="https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model-FFD21E?style=flat-square" alt="Hugging Face model" /></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-2563EB?style=flat-square" alt="Apache 2.0 license" /></a>
 <a href="docs/training.md"><img src="https://img.shields.io/badge/PyTorch-Training-EE4C2C?style=flat-square" alt="PyTorch training" /></a>
+<a href="https://github.com/Alibaba-VELLDEPTH/DreamRealm/actions/workflows/checks.yml"><img src="https://github.com/Alibaba-VELLDEPTH/DreamRealm/actions/workflows/checks.yml/badge.svg" alt="CPU checks" /></a>
 
 **Benlei Cui\*** · **Chunyang Chai\*** · **Yiliang Zhang\*†** · Xiaoqian Xia<br>
 Chengwen Yao · Song Li · Longtao Huang · Yuwen Zhai · Haiwen Hong†
@@ -31,7 +32,7 @@ DreamRealm is a post-training framework for improving visual perception and miti
 | Expose diverse perceptual errors through high-temperature sampling and likelihood-based selection. | Edit visual conditions so selected hallucinated responses become valid, with quality checks and human review. | Train on complete image–response families using matched-pair supervision and bidirectional contrastive learning. |
 
 <p align="center">
-  <img src="assets/framework.png" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" />
+  <img src="assets/framework.jpg" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" />
   <br><sub><b>RealmForgePipe</b> constructs hallucination-guided visual worlds. <b>RealmMatch</b> learns which response belongs to which world.</sub>
 </p>
 
@@ -66,13 +67,13 @@ Main-paper comparison under the manuscript's unified evaluation protocol. These 
 | ObjectHal · CHAIRs ↓ | 30.33 | **8.67** |
 
 <p align="center">
-  <img src="assets/qualitative.png" alt="Held-out examples before and after DreamRealm training, spanning actions, counting, text, rotation, and object recognition." width="100%" />
+  <img src="assets/qualitative.jpg" alt="Held-out examples before and after DreamRealm training, spanning actions, counting, text, rotation, and object recognition." width="100%" />
   <br><sub>Selected held-out examples. Yellow/mint bands denote Qwen3.5-9B / DreamRealm; red/green text marks incorrect/correct responses. Responses are condensed.</sub>
 </p>
 
 ## Use the model
 
-The checkpoint, tokenizer, processor, and chat template are hosted together on [Hugging Face](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm). Use a Transformers version with `qwen3_5` support; the release configuration records **Transformers 5.3.0**.
+The checkpoint, tokenizer, processor, and chat template are hosted together on [Hugging Face](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm). The release configuration records Transformers 5.3.0; **new installations use the repository's 5.10.4 dependency pin** to avoid the older version's known security advisories. See [security notes](SECURITY.md) and [compatibility boundaries](docs/reproducibility.md).
 
 ```bash
 python -m pip install -r requirements.txt

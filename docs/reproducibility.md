@@ -22,6 +22,14 @@ These tests establish implementation properties, **not** model quality, dataset 
 
 ## Record for a comparable experiment
 
+### Dependency update for new installations
+
+The model release configuration records Transformers 5.3.0. The repository now pins Transformers 5.10.4 and mistral-common 1.11.4 for new installations, following the historical Transformers version's security alerts. Version 5.10.0 was not selected because PyPI marks that release as yanked. Upgrading dependencies can affect numerical behavior; this update must not be represented as an exact reconstruction of the paper's historical software environment. Re-run real-model GPU admission and benchmark evaluation before claiming numerical equivalence. See [security notes](../SECURITY.md).
+
+Local validation of the updated dependencies covered model-class imports, loading the released configuration and processor, non-thinking answer/EOS encoding on CPU, all nine unit tests, and the smoke test. No full 9B weight forward/backward pass or benchmark rerun was performed as part of this repository preparation.
+
+### Experiment records
+
 Retain the exact model revision, processor/chat template, data manifest and image hashes, split membership, construction filters, family membership, sampling seed, optimizer/scheduler settings, frozen parameters, precision, framework/CUDA versions, hardware, and evaluation prompts/scorers. Prevent train/test image and near-duplicate leakage. Report deviations from the manuscript's protocol.
 
 The local trainer records the JSONL SHA256, arguments, library versions, GPU name, family statistics, step metrics, and parameter probes. It does **not** hash every referenced image or independently audit dataset leakage. Record those separately in your own experiment system.

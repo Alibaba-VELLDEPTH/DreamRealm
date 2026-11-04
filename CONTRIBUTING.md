@@ -19,3 +19,5 @@ Use `python -m black train_dreamrealm.py dreamrealm scripts tests` to format cha
 For bugs, provide versions, relevant arguments, expected/actual behavior, and a minimal synthetic reproduction. Remove credentials, internal paths/endpoints, private images, and personal data from logs. Do not upload checkpoints or training datasets in pull requests.
 
 Contributions are made under the repository's Apache-2.0 license. Third-party code must retain applicable notices and license terms.
+
+For vulnerabilities, use the private contact route in [SECURITY.md](SECURITY.md) rather than posting sensitive details in an issue.
