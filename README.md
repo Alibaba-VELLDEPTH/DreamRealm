@@ -21,7 +21,7 @@ Chengwen Yao · Song Li · Longtao Huang · Yuwen Zhai · Haiwen Hong†
 </div>
 
 <p align="center">
-  <img src="assets/motivation.jpg" alt="DreamRealm introductory figure: hallucinated responses can become valid under corresponding edited visual conditions." width="100%" />
+  <a href="assets/motivation.jpg"><img src="assets/motivation-preview.jpg" alt="DreamRealm introductory figure: hallucinated responses can become valid under corresponding edited visual conditions." width="100%" /></a>
   <br><sub>Exploring a model's hallucination worlds, materializing supporting images, and learning their correspondence.</sub>
 </p>
 
@@ -37,7 +37,7 @@ DreamRealm is a post-training framework for improving visual perception and miti
 | Expose diverse perceptual errors through high-temperature sampling and likelihood-based selection. | Edit visual conditions so selected hallucinated responses become valid, with quality checks and human review. | Train on complete image–response families using matched-pair supervision and bidirectional contrastive learning. |
 
 <p align="center">
-  <img src="assets/framework.jpg" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" />
+  <a href="assets/framework.png"><img src="assets/framework-preview.jpg" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" /></a>
   <br><sub><b>RealmForgePipe</b> constructs hallucination-guided visual worlds. <b>RealmMatch</b> learns which response belongs to which world.</sub>
 </p>
 
@@ -66,7 +66,7 @@ Main-paper comparison under the manuscript's unified evaluation protocol. These 
 | ObjectHal · CHAIRs ↓ | 30.33 | **8.67** |
 
 <p align="center">
-  <img src="assets/qualitative.jpg" alt="Held-out examples before and after DreamRealm training, spanning actions, counting, text, rotation, and object recognition." width="100%" />
+  <a href="assets/qualitative.png"><img src="assets/qualitative-preview.jpg" alt="Held-out examples before and after DreamRealm training, spanning actions, counting, text, rotation, and object recognition." width="100%" /></a>
   <br><sub>Selected held-out examples. Yellow/mint bands denote Qwen3.5-9B / DreamRealm; red/green text marks incorrect/correct responses. Responses are condensed.</sub>
 </p>
 

@@ -6,3 +6,5 @@
 - `qualitative.jpg`: web-optimized before/after examples (Figure 3). `qualitative.png` retains the original embedded resolution without lossy recompression.
 
 Scientific labels and example content have not been redrawn or altered. Read each figure together with the captions and evaluation context in the paper. Embedded example images may have their own source rights; the code license does not supersede third-party image rights.
+
+The README serves smaller `*-preview.jpg` variants for faster loading. Click each figure to open its higher-resolution asset. `hero.svg` is retained as optional project artwork; the README now leads with the paper's introductory figure.
