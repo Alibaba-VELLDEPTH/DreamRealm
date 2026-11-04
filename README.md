@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/hero.svg" alt="DreamRealm — Mine. Materialize. Match." width="100%" />
+# DreamRealm
 
 ### Exploring and Materializing Hallucination Worlds<br>for Trustworthy Vision-Language Models
 
@@ -20,6 +20,11 @@ Chengwen Yao · Song Li · Longtao Huang · Yuwen Zhai · Haiwen Hong†
 
 </div>
 
+<p align="center">
+  <img src="assets/motivation.jpg" alt="DreamRealm introductory figure: hallucinated responses can become valid under corresponding edited visual conditions." width="100%" />
+  <br><sub>Exploring a model's hallucination worlds, materializing supporting images, and learning their correspondence.</sub>
+</p>
+
 > **What if a hallucinated answer were correct—in a different visual world?**
 > DreamRealm turns a model's perceptual confusions into visual supervision: create images that support its hallucinated responses, then learn to match each response to the right image.
 
@@ -35,12 +40,6 @@ DreamRealm is a post-training framework for improving visual perception and miti
   <img src="assets/framework.jpg" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" />
   <br><sub><b>RealmForgePipe</b> constructs hallucination-guided visual worlds. <b>RealmMatch</b> learns which response belongs to which world.</sub>
 </p>
-
-<details>
-<summary><b>Why materialize hallucinations? View the motivating example.</b></summary>
-<br>
-<img src="assets/motivation.jpg" alt="Motivating examples of matching hallucinated responses to supporting edited images." width="100%" />
-</details>
 
 ### Release at a glance
 

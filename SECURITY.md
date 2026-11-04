@@ -16,6 +16,10 @@ New installations pin **Transformers 5.10.4**, which is outside the published af
 
 Historical metadata remains unchanged for provenance. Do not treat it as a recommendation to install the old version. Read the [reproducibility notes](docs/reproducibility.md) before comparing a new environment with the paper experiments.
 
+## Development tools
+
+The development formatter is pinned to Black 26.10.1, following GitHub's upgrade guidance for the cache-filename and GitHub Action required-version advisories. This repository invokes the installed formatter directly, not the Black GitHub Action; keep the development pin updated as well as runtime dependencies.
+
 ## Reporting
 
 For a suspected vulnerability, contact **cuibenlei.cbl@alibaba-inc.com**. Do not post credentials, private training data, or working exploit payloads in a public issue. This contact route does not imply a guaranteed response time or a bug-bounty program.
