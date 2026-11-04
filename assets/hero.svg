@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="340" viewBox="0 0 1440 340" role="img" aria-labelledby="title desc">
+  <title id="title">DreamRealm</title>
+  <desc id="desc">Mine. Materialize. Match. Learning hallucination–reality correspondence.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#fff9f2"/><stop offset="1" stop-color="#ffecd8"/></linearGradient>
+    <linearGradient id="accent"><stop stop-color="#ff6a00"/><stop offset="1" stop-color="#ff9b45"/></linearGradient>
+  </defs>
+  <rect width="1440" height="340" rx="24" fill="url(#bg)"/>
+  <path d="M0 300C350 180 650 480 1440 190" fill="none" stroke="#ffd8b4" stroke-width="2"/>
+  <path d="M0 325C350 205 650 505 1440 215" fill="none" stroke="#ffe1c6" stroke-width="2"/>
+  <rect x="58" y="55" width="54" height="5" rx="2.5" fill="#ff6a00"/>
+  <text x="58" y="97" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="700" letter-spacing="3" fill="#8f5a34">YUVION TEAM · ALIBABA GROUP</text>
+  <text x="54" y="191" font-family="Arial,Helvetica,sans-serif" font-size="83" font-weight="700" letter-spacing="-3" fill="#20242c">Dream<tspan fill="#ef6500">Realm</tspan></text>
+  <text x="59" y="241" font-family="Arial,Helvetica,sans-serif" font-size="26" fill="#555b65">Mine. Materialize. Match.</text>
+  <text x="59" y="281" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#717781">Learning hallucination–reality correspondence</text>
+  <g transform="translate(1000 60)">
+    <rect x="0" y="0" width="238" height="220" rx="20" fill="#fff" stroke="#f2cfb1"/>
+    <text x="119" y="31" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="12" letter-spacing="2" fill="#94704e">FIND THE RIGHT WORLD</text>
+    <g fill="#f1f2f4">
+      <rect x="25" y="52" width="53" height="39" rx="8"/><rect x="92" y="52" width="53" height="39" rx="8"/><rect x="159" y="52" width="53" height="39" rx="8"/>
+      <rect x="25" y="104" width="53" height="39" rx="8"/><rect x="92" y="104" width="53" height="39" rx="8"/><rect x="159" y="104" width="53" height="39" rx="8"/>
+      <rect x="25" y="156" width="53" height="39" rx="8"/><rect x="92" y="156" width="53" height="39" rx="8"/><rect x="159" y="156" width="53" height="39" rx="8"/>
+    </g>
+    <g fill="url(#accent)"><rect x="25" y="52" width="53" height="39" rx="8"/><rect x="92" y="104" width="53" height="39" rx="8"/><rect x="159" y="156" width="53" height="39" rx="8"/></g>
+    <g fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m41 71 7 7 14-14"/><path d="m108 123 7 7 14-14"/><path d="m175 175 7 7 14-14"/></g>
+  </g>
+  <circle cx="1283" cy="92" r="18" fill="#ff6a00" opacity=".14"/><circle cx="1313" cy="263" r="8" fill="#ff6a00" opacity=".3"/>
+</svg>

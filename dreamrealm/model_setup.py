@@ -10,5 +10,7 @@ def freeze_vision_backbone(model):
         if parameter.requires_grad:
             trainable.append(name)
     if not trainable:
-        raise ValueError("No trainable parameters remain after freezing the vision backbone")
+        raise ValueError(
+            "No trainable parameters remain after freezing the vision backbone"
+        )
     return trainable

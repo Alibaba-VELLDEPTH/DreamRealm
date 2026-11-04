@@ -1,51 +1,115 @@
-# DreamRealm Qwen3.5-VL 本地训练
+<div align="center">
 
-这是一个精简的单机训练仓库，仅保留 Qwen3.5-VL 的 DreamRealm
-whole-family 训练链路。核心目标由完整回答 SFT、行方向匹配损失和列方向匹配损失组成，
-不使用 rollout 或参考模型。
+<img src="assets/hero.svg" alt="DreamRealm — Mine. Materialize. Match." width="100%" />
 
-## 仓库结构
+### Exploring and Materializing Hallucination Worlds<br>for Trustworthy Vision-Language Models
 
-```text
-.
-├── dreamrealm/              # 数据校验、编码、目标函数、反传和检查点
-├── docs/data-format.md      # family JSONL 数据格式
-├── scripts/local_smoke.py   # 无需模型和 GPU 的 CPU 冒烟测试
-├── tests/                   # 核心单元测试
-├── train_dreamrealm.py      # 唯一训练入口：单机单卡
-└── requirements.txt
-```
+<a href=""><img src="https://img.shields.io/badge/arXiv-coming_soon-B31B1B?style=flat-square" alt="arXiv: coming soon" /></a>
+<a href="https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model-FFD21E?style=flat-square" alt="Hugging Face model" /></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-2563EB?style=flat-square" alt="Apache 2.0 license" /></a>
+<a href="docs/training.md"><img src="https://img.shields.io/badge/PyTorch-Training-EE4C2C?style=flat-square" alt="PyTorch training" /></a>
 
-## 安装
+**Benlei Cui\*** · **Chunyang Chai\*** · **Yiliang Zhang\*†** · Xiaoqian Xia<br>
+Chengwen Yao · Song Li · Longtao Huang · Yuwen Zhai · Haiwen Hong†
 
-建议使用 Python 3.10 或 3.11。真实训练需要 Linux、CUDA GPU，以及本机可读取的
-Qwen3.5-VL 模型目录。
+**Yuvion Team, Alibaba Group**<br>
+<sub>\* Equal contribution · † Corresponding authors · <a href="mailto:cuibenlei.cbl@alibaba-inc.com">Contact</a></sub>
+
+[Overview](#overview) · [Results](#results) · [Model](#use-the-model) · [Training](#train-dreamrealm) · [Citation](#citation)
+
+</div>
+
+> **What if a hallucinated answer were correct—in a different visual world?**
+> DreamRealm turns a model's perceptual confusions into visual supervision: create images that support its hallucinated responses, then learn to match each response to the right image.
+
+## Overview
+
+DreamRealm is a post-training framework for improving visual perception and mitigating hallucinations in vision-language models. Rather than only suppressing unsupported answers under a fixed image, it learns **hallucination–reality correspondence** across original and edited images.
+
+| Mine | Materialize | Match |
+| :--- | :--- | :--- |
+| Expose diverse perceptual errors through high-temperature sampling and likelihood-based selection. | Edit visual conditions so selected hallucinated responses become valid, with quality checks and human review. | Train on complete image–response families using matched-pair supervision and bidirectional contrastive learning. |
+
+<p align="center">
+  <img src="assets/framework.png" alt="DreamRealm framework: RealmForgePipe mines hallucinated responses and materializes supporting images; RealmMatch learns image–response correspondence." width="100%" />
+  <br><sub><b>RealmForgePipe</b> constructs hallucination-guided visual worlds. <b>RealmMatch</b> learns which response belongs to which world.</sub>
+</p>
+
+<details>
+<summary><b>Why materialize hallucinations? View the motivating example.</b></summary>
+<br>
+<img src="assets/motivation.jpg" alt="Motivating examples of matching hallucinated responses to supporting edited images." width="100%" />
+</details>
+
+### Release at a glance
+
+| Resource | Status |
+| :--- | :--- |
+| [Qwen35-9b-DreamRealm weights](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm) | Available · Qwen3.5-9B-based · BF16 |
+| RealmMatch local training implementation | Included in this repository |
+| CPU correctness tests and smoke test | Included |
+| Paper / arXiv | Coming soon; the arXiv badge intentionally has no destination yet |
+| RealmForgePipe construction pipeline, training data, distributed experiment launchers | Not included in this release |
+
+## Results
+
+Main-paper comparison under the manuscript's unified evaluation protocol. These are **reported paper results**, not scores recomputed by this repository's CPU tests. Scores use the paper's percentage scale; ↑ higher is better, ↓ lower is better.
+
+| Benchmark / metric | Qwen3.5-9B | + DreamRealm |
+| :--- | ---: | ---: |
+| HallusionBench · aAcc ↑ | 70.95 | **78.21** |
+| MMVP · item accuracy ↑ | 80.00 | **86.67** |
+| MMVP · pair accuracy ↑ | 63.33 | **74.67** |
+| AMBER · average accuracy ↑ | 88.34 | **91.01** |
+| MMHal-Bench · hallucination rate ↓ | 47.92 | **27.08** |
+| CV-Bench-2D · macro accuracy ↑ | 82.16 | **82.89** |
+| ObjectHal · CHAIRs ↓ | 30.33 | **8.67** |
+
+<p align="center">
+  <img src="assets/qualitative.png" alt="Held-out examples before and after DreamRealm training, spanning actions, counting, text, rotation, and object recognition." width="100%" />
+  <br><sub>Selected held-out examples. Yellow/mint bands denote Qwen3.5-9B / DreamRealm; red/green text marks incorrect/correct responses. Responses are condensed.</sub>
+</p>
+
+## Use the model
+
+The checkpoint, tokenizer, processor, and chat template are hosted together on [Hugging Face](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm). Use a Transformers version with `qwen3_5` support; the release configuration records **Transformers 5.3.0**.
 
 ```bash
+python -m pip install -r requirements.txt
+python -m pip install huggingface_hub
+hf download Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm \
+  --local-dir /models/Qwen35-9b-DreamRealm
+```
+
+See the [image inference example](docs/inference.md) for a local-image, non-thinking Transformers example. GPU memory needs depend on image resolution, sequence length, and generation settings.
+
+## Train DreamRealm
+
+### 1. Set up
+
+Use Linux with a CUDA-capable GPU for real training. Install a PyTorch build appropriate for your CUDA environment before the remaining dependencies.
+
+```bash
+git clone https://github.com/Alibaba-VELLDEPTH/DreamRealm.git
+cd DreamRealm
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-如果本机需要特定 CUDA 版本的 PyTorch，请先按 PyTorch 官方说明安装对应 wheel，
-再安装其余依赖。
-
-## 先跑本地冒烟测试
-
-这个命令只需要 CPU，不下载模型，也不读取图片：
+### 2. Check the implementation on CPU
 
 ```bash
 python scripts/local_smoke.py
 python -m unittest discover -s tests -v
 ```
 
-成功时第一条命令会输出 `"status": "PASS"`。
+These checks cover the objective, replay gradients, CPU optimizer, family validation, vision freezing, and checkpoint integrity. They do **not** validate Qwen GPU memory fit or reproduce the paper's benchmarks.
 
-## 单卡训练
+### 3. Prepare complete families and train
 
-模型、数据、图片和输出都使用普通本地路径。JSONL 中的图片路径可以是绝对路径；
-若使用相对路径，通过 `--media-root` 指定图片根目录。
+Each JSONL record must contain a complete original/edited image–answer family. See the [data contract](docs/data-format.md); image paths may be absolute or relative to `--media-root`. Model and processor files must already be downloaded locally.
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train_dreamrealm.py \
@@ -53,27 +117,55 @@ CUDA_VISIBLE_DEVICES=0 python train_dreamrealm.py \
   --data /datasets/dreamrealm/families.jsonl \
   --media-root /datasets/dreamrealm \
   --output /checkpoints/dreamrealm-run-001 \
-  --epochs 3 \
-  --families-per-step 1 \
-  --lr 5e-6 \
-  --warmup-ratio 0.03 \
-  --lr-scheduler cosine \
+  --epochs 3 --families-per-step 1 \
+  --lr 5e-6 --lr-scheduler cosine --warmup-ratio 0.03 \
   --save-optimizer
 ```
 
-训练默认冻结视觉 patch embedding 和视觉 blocks，训练语言模型与多模态投影层；优化器
-主权重和状态保存在 CPU，以降低单卡显存占用。输出目录必须不存在，避免覆盖已有结果。
+**Implementation scope.** This entry point is a **single-GPU reference implementation** of RealmMatch, not the paper's distributed training launcher. It preserves the full-family objective with two-pass score replay and offloads FP32 AdamW master weights/states to CPU. It must not be launched with `torchrun`. CPU RAM and GPU memory should be measured on your actual families; no universal GPU-size guarantee is implied.
 
-在正式训练前，可先验证完整数据和图像编码：
+Read the [training guide](docs/training.md) for preflight, loss settings, outputs, resume, and failure modes, and the [reproducibility notes](docs/reproducibility.md) for the distinction between this implementation and the paper experiments.
 
-```bash
-python train_dreamrealm.py \
-  --model /models/Qwen3.5-9B \
-  --data /datasets/dreamrealm/families.jsonl \
-  --media-root /datasets/dreamrealm \
-  --output /tmp/dreamrealm-preflight \
-  --preflight-only
+## Repository map
+
+```text
+DreamRealm/
+├── train_dreamrealm.py       # Single-GPU training entry point
+├── dreamrealm/
+│   ├── prepare.py           # Family validation and legacy pair conversion
+│   ├── encoding.py          # Full-answer teacher forcing and cell scoring
+│   ├── objective.py         # Matched SFT + row/column contrastive losses
+│   ├── engine.py            # Two-pass replay and CPU-offloaded AdamW
+│   ├── model_setup.py       # Vision-backbone freezing
+│   └── checkpoint_io.py     # Checksummed, bounded-size checkpoint parts
+├── scripts/local_smoke.py   # Lightweight CPU gradient smoke test
+├── tests/                  # Correctness and checkpoint tests
+├── docs/                   # Data, training, inference, reproducibility
+└── assets/                 # Paper figures and project artwork
 ```
 
-数据字段与 edited/no-edit 两种 family 结构见
-[docs/data-format.md](docs/data-format.md)。
+## Contributing
+
+Bug reports and focused improvements are welcome. Please include a minimal reproduction and environment details, without uploading private images, training data, credentials, or checkpoints. See [CONTRIBUTING.md](CONTRIBUTING.md) for the development checks.
+
+## Citation
+
+If DreamRealm helps your research, please cite the project. The entry below is provisional until an arXiv identifier is available.
+
+```bibtex
+@misc{cui2026dreamrealm,
+  title  = {DreamRealm: Exploring and Materializing Hallucination Worlds for Trustworthy Vision-Language Models},
+  author = {Benlei Cui and Chunyang Chai and Yiliang Zhang and Xiaoqian Xia and Chengwen Yao and Song Li and Longtao Huang and Yuwen Zhai and Haiwen Hong},
+  year   = {2026},
+  note   = {Preprint; arXiv identifier forthcoming},
+  url    = {https://github.com/Alibaba-VELLDEPTH/DreamRealm}
+}
+```
+
+## License and acknowledgments
+
+The code in this repository is licensed under [Apache-2.0](LICENSE). Model weights and third-party components remain subject to their respective licenses; consult the [model repository](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm) and upstream releases.
+
+Built on [Qwen3.5](https://huggingface.co/Qwen/Qwen3.5-9B), [Hugging Face Transformers](https://github.com/huggingface/transformers), and [PyTorch](https://github.com/pytorch/pytorch).
+
+<div align="center"><sub>Yuvion Team · Alibaba Group</sub></div>

@@ -1,4 +1,5 @@
 """Fast CPU smoke test for the data contract and exact family-gradient path."""
+
 from pathlib import Path
 import json
 import sys
@@ -20,9 +21,7 @@ def main():
             "question": "Which answer belongs to each image?",
             "original_image": "images/original.jpg",
             "original_answer": "original",
-            "edited_pairs": [
-                {"image": "images/edited.jpg", "answer": "edited"}
-            ],
+            "edited_pairs": [{"image": "images/edited.jpg", "answer": "edited"}],
             "original_negative_answers": [],
         }
     )
