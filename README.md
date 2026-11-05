@@ -4,7 +4,7 @@
 
 ### Exploring and Materializing Hallucination Worlds<br>for Trustworthy Vision-Language Models
 
-<a href=""><img src="https://img.shields.io/badge/arXiv-coming_soon-B31B1B?style=flat-square" alt="arXiv: coming soon" /></a>
+<a href="https://arxiv.org/abs/2611.06433"><img src="https://img.shields.io/badge/arXiv-2611.06433-B31B1B?style=flat-square" alt="arXiv: 2611.06433" /></a>
 <a href="https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model-FFD21E?style=flat-square" alt="Hugging Face model" /></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-2563EB?style=flat-square" alt="Apache 2.0 license" /></a>
 <a href="docs/training.md"><img src="https://img.shields.io/badge/PyTorch-Training-EE4C2C?style=flat-square" alt="PyTorch training" /></a>
@@ -16,7 +16,7 @@ Chengwen Yao · Song Li · Longtao Huang · Yuwen Zhai · Haiwen Hong†
 **Yuvion Team, Alibaba Group**<br>
 <sub>\* Equal contribution · † Corresponding authors · <a href="mailto:cuibenlei.cbl@alibaba-inc.com">Contact</a></sub>
 
-[Overview](#overview) · [Results](#results) · [Model](#use-the-model) · [Training](#train-dreamrealm) · [Citation](#citation)
+[Paper](https://arxiv.org/abs/2611.06433) · [Overview](#overview) · [Results](#results) · [Model](#use-the-model) · [Training](#train-dreamrealm) · [Citation](#citation)
 
 </div>
 
@@ -48,7 +48,7 @@ DreamRealm is a post-training framework for improving visual perception and miti
 | [Qwen35-9b-DreamRealm weights](https://huggingface.co/Alibaba-VELLDEPTH/Qwen35-9b-DreamRealm) | Available · Qwen3.5-9B-based · BF16 |
 | RealmMatch local training implementation | Included in this repository |
 | CPU correctness tests and smoke test | Included |
-| Paper / arXiv | Coming soon; the arXiv badge intentionally has no destination yet |
+| [Paper / arXiv](https://arxiv.org/abs/2611.06433) | Available · arXiv:2611.06433 |
 | RealmForgePipe construction pipeline, training data, distributed experiment launchers | Not included in this release |
 
 ## Results
@@ -150,15 +150,17 @@ Bug reports and focused improvements are welcome. Please include a minimal repro
 
 ## Citation
 
-If DreamRealm helps your research, please cite the project. The entry below is provisional until an arXiv identifier is available.
+If DreamRealm helps your research, please cite our paper:
 
 ```bibtex
 @misc{cui2026dreamrealm,
   title  = {DreamRealm: Exploring and Materializing Hallucination Worlds for Trustworthy Vision-Language Models},
   author = {Benlei Cui and Chunyang Chai and Yiliang Zhang and Xiaoqian Xia and Chengwen Yao and Song Li and Longtao Huang and Yuwen Zhai and Haiwen Hong},
   year   = {2026},
-  note   = {Preprint; arXiv identifier forthcoming},
-  url    = {https://github.com/Alibaba-VELLDEPTH/DreamRealm}
+  eprint = {2611.06433},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url    = {https://arxiv.org/abs/2611.06433}
 }
 ```
 
